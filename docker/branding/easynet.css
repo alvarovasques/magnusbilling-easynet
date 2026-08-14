@@ -1,0 +1,129 @@
+/* =====================================================================
+   Easynet Telefônica — Camada A (override de marca sobre o tema blue-crisp)
+   Carregado DEPOIS do tema do Ext JS. Idempotente: some se removido.
+   Não recompila nada; recolore as superfícies-chave e a tela de login.
+   Paleta calibrada para acessibilidade (ação = #176FA6, passa WCAG AA).
+   ===================================================================== */
+
+:root {
+  --ez-sky: #54A8D8;
+  --ez-navy: #00243C;
+  --ez-navy-2: #013A5E;
+  --ez-action: #176FA6;
+  --ez-action-hover: #125A87;
+  --ez-bg: #F4F9FD;
+  --ez-surface: #FFFFFF;
+  --ez-text: #0E2233;
+  --ez-muted: #5B7180;
+  --ez-success: #1E9E6A;
+  --ez-warning: #D98A00;
+  --ez-danger: #C6413B;
+  --ez-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* Fonte Inter (self-host opcional; usa a stack de sistema como fallback) */
+body, .x-body, .x-panel, .x-grid, .x-form-item-label,
+.x-btn, .x-toolbar, .x-tab, .x-window {
+  font-family: var(--ez-font);
+}
+
+/* ---------- Splash / máscara de carregamento ---------- */
+#loading-mask { background-color: var(--ez-navy) !important; }
+#loading .loading-indicator #name-system { color: #FFFFFF; font-weight: 600; }
+#loading .loading-indicator #text-msg,
+#loading .loading-indicator #loading-msg { color: var(--ez-sky); }
+
+/* ---------- Tela de login ---------- */
+/* Fundo navy com leve textura de gradiente (substitui o wallpaper padrão). */
+.auth-locked-window,
+.auth-locked-window .x-window-body {
+  background: radial-gradient(1200px 600px at 20% -10%, var(--ez-navy-2) 0%, var(--ez-navy) 60%) !important;
+  border: 0 !important;
+}
+/* Marca branca no topo do card de login (injetada via easynet.js). */
+.ez-login-brand {
+  display: block;
+  margin: 0 auto 18px auto;
+  max-width: 260px;
+}
+/* Card interno do login: superfície branca, cantos arredondados, sombra. */
+.auth-locked-window .x-form,
+.auth-locked-window .x-panel-default,
+.auth-locked-window .x-container-default > .x-box-inner {
+  background: transparent !important;
+}
+.auth-locked-window .x-window-header { display: none !important; }
+
+/* Botão primário de login e botões primários em geral. */
+.x-btn.mb-btn-primary,
+.x-btn-default-toolbar-large,
+.auth-locked-window .x-btn-default-large,
+.x-btn-default-large.x-btn-focus,
+.x-btn.ez-primary {
+  background: var(--ez-action) !important;
+  border-color: var(--ez-action) !important;
+  color: #FFFFFF !important;
+}
+.x-btn.mb-btn-primary:hover,
+.auth-locked-window .x-btn-default-large-over,
+.x-btn.ez-primary-over {
+  background: var(--ez-action-hover) !important;
+  border-color: var(--ez-action-hover) !important;
+}
+
+/* ---------- Barra superior / cabeçalho da aplicação ---------- */
+.x-toolbar-default,
+.x-panel-header-default,
+.x-docked-top > .x-toolbar {
+  background: var(--ez-navy) !important;
+  border-color: var(--ez-navy) !important;
+}
+.x-toolbar-default .x-btn-inner,
+.x-panel-header-default .x-panel-header-title-default .x-title-text {
+  color: #FFFFFF !important;
+}
+.x-toolbar-default .x-btn-over,
+.x-toolbar-default .x-btn-menu-active {
+  background: var(--ez-navy-2) !important;
+}
+
+/* ---------- Menu lateral / navegação ---------- */
+.x-tab-bar-default,
+.x-panel-default-framed .x-panel-header {
+  background: var(--ez-navy) !important;
+}
+.x-tab-active,
+.x-tab-default-active {
+  background: var(--ez-action) !important;
+  border-color: var(--ez-action) !important;
+}
+.x-tab-active .x-tab-inner,
+.x-tab-default-active .x-tab-inner-default { color: #FFFFFF !important; }
+
+/* ---------- Grids: seleção e cabeçalho ---------- */
+.x-grid-item-selected .x-grid-cell,
+.x-grid-item-selected {
+  background-color: rgba(23, 111, 166, 0.12) !important;
+}
+.x-column-header-default {
+  background: #EAF3FA !important;
+  color: var(--ez-navy) !important;
+}
+.x-grid-row-over .x-grid-cell { background-color: rgba(84, 168, 216, 0.08) !important; }
+
+/* ---------- Botões / links de ação padrão ---------- */
+a, .x-form-item .x-form-cb-label a { color: var(--ez-action); }
+a:hover { color: var(--ez-action-hover); }
+
+/* ---------- Foco acessível (contorno visível) ---------- */
+.x-field-focus, .x-form-focus, .x-btn-focus {
+  box-shadow: 0 0 0 2px rgba(23, 111, 166, 0.35) !important;
+}
+
+/* ---------- Fundo geral da aplicação ---------- */
+.x-body { background: var(--ez-bg) !important; }
+
+/* ---------- Ícone/créditos do "Sobre": esconder link magnusbilling.org ----------
+   (o texto/nome já é trocado por window.*Custom em easynet.js;
+    aqui garantimos que o link de crédito externo não apareça.) */
+#credits { display: none !important; }

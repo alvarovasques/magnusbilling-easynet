@@ -57,6 +57,14 @@ RUN rm -f /var/www/html/index.html \
     && chown -R www-data:www-data /var/www/html \
     && chmod +x /var/www/html/mbilling/resources/asterisk/mbilling.php && usermod -aG asterisk www-data
 
+# ---- Marca Easynet Telefonica (Camada A: remove MagnusBilling da UI) ----
+# Idempotente; roda sobre o pacote oficial recem-baixado. Nao quebra o build
+# se o layout do index.html mudar (o script so avisa e segue).
+COPY docker/branding/ /opt/easynet-branding/
+RUN chmod +x /opt/easynet-branding/apply-branding.sh \
+    && /opt/easynet-branding/apply-branding.sh /opt/easynet-branding /var/www/html/mbilling \
+    && chown -R www-data:www-data /var/www/html/mbilling/resources
+
 # ---- Apache (docroot + módulos) ----
 RUN a2dismod mpm_event mpm_worker 2>/dev/null; a2enmod mpm_prefork php8.2 rewrite 2>/dev/null; a2disconf php8.2-fpm 2>/dev/null; true \
     && sed -ri 's/^Listen 80$/Listen 8080/' /etc/apache2/ports.conf \
