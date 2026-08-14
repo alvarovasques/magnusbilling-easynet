@@ -99,3 +99,27 @@ services:
       nofile:
         soft: 500000
         hard: 500000
+
+  web:
+    # Frontend Easynet (SPA nginx). Imagem buildada pela CI a partir de web/.
+    # Publica 8090 host-mode no nó MB; o Traefik roteia "/" para cá e
+    # "/index.php" + "/mbilling" para o app (ver traefik-dynamic-mb.yml).
+    # NÃO abrir 8090 para a internet (só o Traefik acessa).
+    image: ghcr.io/alvarovasques/easynet-web:latest
+    networks:
+      - MBNTW
+    ports:
+      - target: 80
+        published: 8090
+        protocol: tcp
+        mode: host
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == MB
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          memory: 128M
