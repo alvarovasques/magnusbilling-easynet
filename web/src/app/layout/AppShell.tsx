@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
@@ -18,7 +18,11 @@ export function AppShell() {
       )}
       <div className="flex min-w-0 flex-col">
         <Topbar onMenu={() => setOpen(true)} />
-        <main className="flex-1 overflow-auto bg-app p-4 md:p-5"><Outlet /></main>
+        <main className="flex-1 overflow-auto bg-app p-4 md:p-5">
+          <Suspense fallback={<div className="grid h-full place-items-center text-sm text-ink-secondary">Carregando…</div>}>
+            <Outlet />
+          </Suspense>
+        </main>
       </div>
     </div>
   );

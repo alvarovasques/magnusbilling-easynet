@@ -1,6 +1,7 @@
 import { LayoutDashboard, PhoneCall, Network, Hash, ListTree, Route, Users, Tag, FileText, Wallet, Settings,
   PhoneOutgoing, ShieldBan, Waypoints, History, BookUser, Megaphone, Voicemail, Store, ReceiptText,
-  Server, ShieldCheck, IdCard, Ticket, CreditCard } from 'lucide-react';
+  Server, ShieldCheck, IdCard, Ticket, CreditCard, Router as RouterIcon, MapPin, ScrollText, Bug, DatabaseBackup,
+  Building2, PackageOpen, BadgePercent } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 export interface NavItem { to: string; label: string; icon: LucideIcon; }
 export interface NavGroup { title?: string; items: NavItem[]; }
@@ -14,9 +15,15 @@ export const NAV: NavGroup[] = [
     { to: '/sip', label: 'Troncos / Contas SIP', icon: Network },
     { to: '/dids', label: 'Numeração / DIDs', icon: Hash },
     { to: '/rotas', label: 'Rotas / Troncos', icon: Route },
+    { to: '/ata-linksys', label: 'ATA Linksys', icon: RouterIcon },
+    { to: '/cnl', label: 'CNL / Portabilidade', icon: MapPin },
+    { to: '/provedores', label: 'Provedores', icon: Building2 },
+    { to: '/prefixos', label: 'Prefixos / Destinos', icon: MapPin },
   ]},
   { title: 'Comercial', items: [
     { to: '/clientes', label: 'Clientes', icon: Users },
+    { to: '/planos', label: 'Planos', icon: BadgePercent },
+    { to: '/ofertas', label: 'Ofertas', icon: PackageOpen },
     { to: '/callerid', label: 'CallerID', icon: PhoneOutgoing },
     { to: '/bloqueios', label: 'Números bloqueados', icon: ShieldBan },
     { to: '/iax', label: 'Contas IAX', icon: Waypoints },
@@ -44,5 +51,8 @@ export const NAV: NavGroup[] = [
     { to: '/servidores', label: 'Servidores', icon: Server },
     { to: '/grupos', label: 'Grupos de usuário', icon: ShieldCheck },
     { to: '/tipos-usuario', label: 'Tipos de usuário', icon: IdCard },
+    { to: '/logs', label: 'Logs de usuário', icon: ScrollText },
+    { to: '/sip-trace', label: 'SIP Trace', icon: Bug },
+    { to: '/backup', label: 'Backup', icon: DatabaseBackup },
   ]},
 ];
