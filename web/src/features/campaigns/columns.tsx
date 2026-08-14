@@ -1,0 +1,14 @@
+import type { ColDef } from 'ag-grid-community';
+import { Campaign, campaignType } from './api';
+import { Badge } from '@/design-system/components/Badge';
+
+export const campaignColumns: ColDef<Campaign>[] = [
+  { field: 'name', headerName: 'Campanha', minWidth: 200, pinned: 'left' },
+  { field: 'idUserusername', headerName: 'Cliente', minWidth: 150 },
+  { field: 'type', headerName: 'Tipo', minWidth: 120, sortable: false, filter: false,
+    cellRenderer: (p: any) => { const t = campaignType(p.value); return <Badge tone={t.tone}>{t.label}</Badge>; } },
+  { field: 'startingdate', headerName: 'Início', minWidth: 160 },
+  { field: 'frequency', headerName: 'Freq.', minWidth: 100, type: 'rightAligned' },
+  { field: 'status', headerName: 'Situação', minWidth: 120, sortable: false, filter: false,
+    cellRenderer: (p: any) => (Number(p.value) === 1 ? <Badge tone="success">Ativa</Badge> : <Badge tone="neutral">Pausada</Badge>) },
+];

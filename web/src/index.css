@@ -1,0 +1,9 @@
+@import '@fontsource-variable/inter';
+@import './design-system/tokens.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+body { margin: 0; background: var(--ez-bg, #F4F9FD); color: var(--ez-text, #0E2233);
+  font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, system-ui, sans-serif; }

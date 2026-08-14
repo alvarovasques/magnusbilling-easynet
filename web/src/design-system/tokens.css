@@ -1,0 +1,81 @@
+/**
+ * Easynet Telefônica — Design Tokens (CSS custom properties)
+ * Equivalente 1:1 a tokens.ts. Importável em qualquer stack (Tailwind @theme,
+ * MUI cssVariables, shadcn, CSS puro). Aplique no :root e consuma via var().
+ */
+:root {
+  /* ── Marca (decorativo — não usar p/ texto/ação sobre branco) ── */
+  --brand-sky: #54A8D8;
+  --brand-sky-emph: #2E8FC9;
+
+  /* ── Ação (AA-safe sobre branco) ── */
+  --primary: #176FA6;
+  --primary-hover: #125781;
+  --primary-active: #0F4A6E;
+
+  /* ── Superfícies escuras ── */
+  --navy: #00243C;
+  --navy-800: #0A3A57;
+  --navy-700: #12587F;
+  --on-dark: #E8F1F8;
+  --on-dark-muted: #9FB4C4;
+
+  /* ── Superfícies e fundos claros ── */
+  --bg: #F4F9FD;
+  --surface: #FFFFFF;
+  --surface-alt: #EEF4F9;
+  --border: #D7E3ED;
+  --border-strong: #B7C9D8;
+
+  /* ── Texto ── */
+  --text: #0E2233;
+  --text-secondary: #5A7183;
+  --text-muted: #8798A6;
+
+  /* ── Semânticas (base / strong=texto AA / bg=fundo suave) ── */
+  --success: #1F9D57;         --success-strong: #15803D;  --success-bg: #E6F6EC;
+  --warning: #F2A31C;         --warning-strong: #8A5A00;  --warning-bg: #FEF3E0;
+  --danger:  #E23B3B;         --danger-strong:  #C22A2A;  --danger-bg:  #FCEAEA;
+  --info:    #2E8FC9;         --info-strong:    #176FA6;  --info-bg:    #E3F1FB;
+
+  /* ── Spacing (base 4px) ── */
+  --space-0: 0;    --space-1: 4px;  --space-2: 8px;  --space-3: 12px;
+  --space-4: 16px; --space-5: 20px; --space-6: 24px; --space-8: 32px;
+  --space-10: 40px; --space-12: 48px; --space-16: 64px;
+
+  /* ── Radius ── */
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --radius-full: 50%;
+
+  /* ── Shadow ── */
+  --shadow-sm: 0 1px 2px rgba(0,36,60,.06);
+  --shadow-md: 0 4px 16px rgba(0,36,60,.10);
+  --shadow-focus: 0 0 0 3px rgba(46,143,201,.35);
+
+  /* ── Typography ── */
+  --font: "Inter","Segoe UI",Roboto,-apple-system,system-ui,Arial,sans-serif;
+  --font-mono: ui-monospace,SFMono-Regular,Menlo,monospace;
+  --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600; --fw-bold: 700;
+
+  --fs-2xs: 11px; --fs-xs: 12px; --fs-sm: 13px; --fs-base: 14px;
+  --fs-md: 15px;  --fs-lg: 20px; --fs-xl: 22px; --fs-2xl: 28px;
+  --lh-tight: 1.2; --lh-heading: 1.3; --lh-snug: 1.4; --lh-normal: 1.5;
+  --ls-wide: .06em; --ls-wider: .08em;
+
+  /* ── Layout ── */
+  --sidebar-w: 210px;
+  --sidebar-w-lg: 240px;
+  --topbar-h: 52px;
+  --content-max-w: 1180px;
+  --input-h: 38px;
+  --btn-h-lg: 40px;
+  --btn-h-md: 34px;
+  --bp-collapse: 820px;
+
+  /* ── Z-index ── */
+  --z-dropdown: 1000; --z-sticky: 1020; --z-sidebar: 1030;
+  --z-overlay: 1040;  --z-modal: 1050;  --z-toast: 1080;
+}

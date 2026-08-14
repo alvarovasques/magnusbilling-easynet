@@ -1,9 +1,9 @@
-name: build-and-deploy
+﻿name: build-and-deploy
 
-# Constrói a imagem do MagnusBilling e publica no GHCR.
-# Em seguida dispara o webhook do Portainer, que RE-PUXA a imagem no nó MB
-# e atualiza o serviço no Swarm (substitui o Watchtower, que não gerencia
-# serviços Swarm — ver DEPLOY.md).
+# ConstrÃ³i a imagem do MagnusBilling e publica no GHCR.
+# Em seguida dispara o webhook do Portainer, que RE-PUXA a imagem no nÃ³ MB
+# e atualiza o serviÃ§o no Swarm (substitui o Watchtower, que nÃ£o gerencia
+# serviÃ§os Swarm â€” ver DEPLOY.md).
 
 on:
   push:
@@ -12,6 +12,7 @@ on:
       - '**.md'
       - 'ia-docs/**'
       - 'wiki/**'
+      - 'web/**'
   workflow_dispatch:
 
 concurrency:
@@ -53,4 +54,4 @@ jobs:
         if: ${{ success() }}
         run: |
           curl -fsS -X POST "${{ secrets.PORTAINER_WEBHOOK_URL }}" || \
-          echo "Webhook falhou — rode 'docker service update --image ghcr.io/${{ github.repository_owner }}/easynet-telefonica:latest mb_app --with-registry-auth' no nó MB."
+          echo "Webhook falhou â€” rode 'docker service update --image ghcr.io/${{ github.repository_owner }}/easynet-telefonica:latest mb_app --with-registry-auth' no nÃ³ MB."
