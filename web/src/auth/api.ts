@@ -11,7 +11,9 @@ export interface LoginResult {
 }
 
 export async function login(user: string, plainPassword: string): Promise<LoginResult> {
-  const password = await sha1Hex(plainPassword);
+  // O backend compara com UPPER(SHA1(senha)) COLLATE utf8_bin (sensível a caixa),
+  // então o hash TEM que ir em maiúsculo (igual ao painel ExtJS).
+  const password = (await sha1Hex(plainPassword)).toUpperCase();
   return apiPost<LoginResult>('authentication/login', { user, password });
 }
 
