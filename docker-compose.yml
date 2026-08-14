@@ -64,7 +64,7 @@ services:
           memory: 1G
 
   app:
-    image: ghcr.io/alvarovasques/magnusbilling:latest
+    image: ghcr.io/alvarovasques/easynet-telefonica:latest
     # Rede host: Asterisk usa 5060/UDP+TCP e a faixa RTP direto nas interfaces do nó.
     networks:
       - hostnet

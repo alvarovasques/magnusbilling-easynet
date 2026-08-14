@@ -69,7 +69,7 @@ RUN chmod +x /opt/easynet-branding/apply-branding.sh \
 RUN a2dismod mpm_event mpm_worker 2>/dev/null; a2enmod mpm_prefork php8.2 rewrite 2>/dev/null; a2disconf php8.2-fpm 2>/dev/null; true \
     && sed -ri 's/^Listen 80$/Listen 8080/' /etc/apache2/ports.conf \
     && sed -ri 's/:80>/:8080>/' /etc/apache2/sites-available/000-default.conf \
-    && sed -ri 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html#' /etc/apache2/sites-available/000-default.conf
+    && sed -ri 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/mbilling#' /etc/apache2/sites-available/000-default.conf
 
 # ---- Sons (br/en/es) ----
 RUN cp -rf /var/www/html/mbilling/resources/sounds/br /var/lib/asterisk/sounds 2>/dev/null || true \
