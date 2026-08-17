@@ -42,6 +42,11 @@ const UserTypePage = L(() => import('@/features/userType/UserTypePage'), 'UserTy
 const LogUsersPage = L(() => import('@/features/logusers/LogUsersPage'), 'LogUsersPage');
 const SipTracePage = L(() => import('@/features/siptrace/SipTracePage'), 'SipTracePage');
 const BackupPage = L(() => import('@/features/backup/BackupPage'), 'BackupPage');
+const SmtpPage = L(() => import('@/features/smtp/SmtpPage'), 'SmtpPage');
+const TemplateMailPage = L(() => import('@/features/templateMail/TemplateMailPage'), 'TemplateMailPage');
+const FirewallPage = L(() => import('@/features/firewall/FirewallPage'), 'FirewallPage');
+const AlarmPage = L(() => import('@/features/alarm/AlarmPage'), 'AlarmPage');
+const ApiKeysPage = L(() => import('@/features/apiKeys/ApiKeysPage'), 'ApiKeysPage');
 const DemoDashboard = L(() => import('@/features/dashboard/DemoDashboard'), 'DemoDashboard');
 
 export const router = createBrowserRouter([
@@ -90,6 +95,11 @@ export const router = createBrowserRouter([
       { path: 'logs', element: <LogUsersPage /> },
       { path: 'sip-trace', element: <SipTracePage /> },
       { path: 'backup', element: <BackupPage /> },
+      { path: 'smtp', element: <SmtpPage /> },
+      { path: 'templates-email', element: <TemplateMailPage /> },
+      { path: 'firewall', element: <FirewallPage /> },
+      { path: 'alarmes', element: <AlarmPage /> },
+      { path: 'chaves-api', element: <ApiKeysPage /> },
     ],
   },
   { path: '/demo', element: <AppShell />, children: [{ index: true, element: <DemoDashboard /> }, { path: 'sip', element: <SipPage /> }] },

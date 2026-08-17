@@ -1,7 +1,7 @@
 import { LayoutDashboard, PhoneCall, Network, Hash, ListTree, Route, Users, Tag, FileText, Wallet, Settings,
   PhoneOutgoing, ShieldBan, Waypoints, History, BookUser, Megaphone, Voicemail, Store, ReceiptText,
   Server, ShieldCheck, IdCard, Ticket, CreditCard, Router as RouterIcon, MapPin, ScrollText, Bug, DatabaseBackup,
-  Building2, PackageOpen, BadgePercent } from 'lucide-react';
+  Building2, PackageOpen, BadgePercent, Mail, MailPlus, Flame, BellRing, KeyRound } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 export interface NavItem { to: string; label: string; icon: LucideIcon; }
 export interface NavGroup { title?: string; items: NavItem[]; }
@@ -51,6 +51,11 @@ export const NAV: NavGroup[] = [
     { to: '/servidores', label: 'Servidores', icon: Server },
     { to: '/grupos', label: 'Grupos de usuário', icon: ShieldCheck },
     { to: '/tipos-usuario', label: 'Tipos de usuário', icon: IdCard },
+    { to: '/smtp', label: 'Servidores SMTP', icon: Mail },
+    { to: '/templates-email', label: 'Templates de e-mail', icon: MailPlus },
+    { to: '/firewall', label: 'Firewall', icon: Flame },
+    { to: '/alarmes', label: 'Alarmes', icon: BellRing },
+    { to: '/chaves-api', label: 'Chaves de API', icon: KeyRound },
     { to: '/logs', label: 'Logs de usuário', icon: ScrollText },
     { to: '/sip-trace', label: 'SIP Trace', icon: Bug },
     { to: '/backup', label: 'Backup', icon: DatabaseBackup },
