@@ -3,7 +3,9 @@ import { Plus, Unlink } from 'lucide-react';
 import type { GridApi, GridReadyEvent, RowClickedEvent, ColDef } from 'ag-grid-community';
 import { DataGrid } from '@/design-system/components/DataGrid';
 import { Button } from '@/design-system/components/Button';
+import { DeleteAction } from '@/design-system/components/DeleteAction';
 import { makeInfiniteDatasource } from '@/api/aggrid';
+import { useDelete } from '@/api/hooks';
 import { didResource, Did, liberarDid } from './api';
 import { didColumns } from './columns';
 import { DidForm } from './DidForm';
@@ -14,14 +16,19 @@ export function DidsPage() {
   const [editing, setEditing] = useState<Did | null>(null);
   const [open, setOpen] = useState(false);
   const refresh = () => api.current?.refreshInfiniteCache();
+  const del = useDelete(didResource);
 
   const columns: ColDef<Did>[] = useMemo(() => [
     ...didColumns,
-    { headerName: '', width: 60, pinned: 'right', sortable: false, filter: false,
-      cellRenderer: (p: any) => (Number(p.data?.id_user) > 0
-        ? <button title="Liberar (devolver ao pool)" className="text-warning-strong hover:text-warning"
-            onClick={async (e) => { e.stopPropagation(); await liberarDid(p.data.id); refresh(); }}><Unlink size={16} /></button>
-        : null) },
+    { headerName: '', width: 92, pinned: 'right', sortable: false, filter: false, resizable: false,
+      cellRenderer: (p: any) => (
+        <div className="flex items-center gap-3">
+          {Number(p.data?.id_user) > 0
+            ? <button title="Liberar (devolver ao pool)" className="text-warning-strong hover:text-warning"
+                onClick={async (e) => { e.stopPropagation(); await liberarDid(p.data.id); refresh(); }}><Unlink size={16} /></button>
+            : null}
+          <DeleteAction onConfirm={async () => { await del.mutateAsync(p.data.id); refresh(); }} />
+        </div>) },
   ], []);
 
   return (

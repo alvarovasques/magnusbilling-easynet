@@ -1,9 +1,11 @@
 import { useMemo, useRef, useState } from 'react';
 import { Plus } from 'lucide-react';
-import type { GridApi, GridReadyEvent, RowClickedEvent } from 'ag-grid-community';
+import type { GridApi, GridReadyEvent, RowClickedEvent, ColDef } from 'ag-grid-community';
 import { DataGrid } from '@/design-system/components/DataGrid';
 import { Button } from '@/design-system/components/Button';
+import { DeleteAction } from '@/design-system/components/DeleteAction';
 import { makeInfiniteDatasource } from '@/api/aggrid';
+import { useDelete } from '@/api/hooks';
 import { calleridResource, Callerid } from './api';
 import { calleridColumns } from './columns';
 import { CalleridForm } from './CalleridForm';
@@ -13,8 +15,15 @@ export function CalleridPage() {
   const gridApi = useRef<GridApi<Callerid> | null>(null);
   const [editing, setEditing] = useState<Callerid | null>(null);
   const [open, setOpen] = useState(false);
+  const del = useDelete(calleridResource);
 
   const refresh = () => gridApi.current?.refreshInfiniteCache();
+
+  const columns: ColDef<Callerid>[] = useMemo(() => [
+    ...calleridColumns,
+    { headerName: '', width: 56, pinned: 'right', sortable: false, filter: false, resizable: false,
+      cellRenderer: (p: any) => <DeleteAction onConfirm={async () => { await del.mutateAsync(p.data.id); refresh(); }} /> },
+  ], []);
   const openNew = () => { setEditing(null); setOpen(true); };
   const openEdit = (e: RowClickedEvent<Callerid>) => { if (e.data) { setEditing(e.data); setOpen(true); } };
 
@@ -28,7 +37,7 @@ export function CalleridPage() {
         <Button onClick={openNew}><Plus size={16} /> Novo CallerID</Button>
       </div>
       <div className="flex-1 overflow-hidden rounded ring-1 ring-line">
-        <DataGrid<Callerid> columns={calleridColumns} datasource={datasource}
+        <DataGrid<Callerid> columns={columns} datasource={datasource}
           gridOptions={{
             onGridReady: (e: GridReadyEvent<Callerid>) => { gridApi.current = e.api; },
             onRowClicked: openEdit,

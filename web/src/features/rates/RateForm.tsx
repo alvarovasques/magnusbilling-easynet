@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { useEffect } from 'react';
 import { Rate, rateResource } from './api';
 import { useSave } from '@/api/hooks';
-import { usePlanOptions, useTrunkOptions, usePrefixOptions } from '@/api/options';
+import { usePlanOptions, usePrefixOptions, useOptions } from '@/api/options';
 import { Drawer } from '@/design-system/components/Drawer';
 import { Field } from '@/design-system/components/Field';
 import { Input } from '@/design-system/components/Input';
@@ -24,7 +24,7 @@ type FormData = z.infer<typeof schema>;
 
 export function RateForm({ open, initial, onClose, onSaved }:
   { open: boolean; initial?: Rate | null; onClose: () => void; onSaved: () => void }) {
-  const plans = usePlanOptions(); const trunks = useTrunkOptions(); const prefixes = usePrefixOptions();
+  const plans = usePlanOptions(); const trunkGroups = useOptions('trunkGroup', 'name'); const prefixes = usePrefixOptions();
   const save = useSave<Rate>(rateResource);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
   useEffect(() => { reset(initial ? { ...initial } as FormData : { billingblock: 60 } as FormData); }, [initial, open, reset]);
@@ -43,7 +43,7 @@ export function RateForm({ open, initial, onClose, onSaved }:
         </Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Plano" error={errors.id_plan?.message}><Select {...register('id_plan')} defaultValue=""><option value="" disabled>{plans.isLoading ? 'Carregando…' : 'Selecione o plano'}</option>{plans.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</Select></Field>
-          <Field label="Grupo de troncos"><Select {...register('id_trunk_group')} defaultValue=""><option value="">— nenhum —</option>{trunks.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</Select></Field>
+          <Field label="Grupo de troncos"><Select {...register('id_trunk_group')} defaultValue=""><option value="">— nenhum —</option>{trunkGroups.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</Select></Field>
         </div>
         <Field label="Tarifa (por min)" error={errors.rateinitial?.message}><Input type="number" step="0.00001" {...register('rateinitial')} /></Field>
         <div className="grid grid-cols-2 gap-3">

@@ -44,7 +44,7 @@ export function IvrForm({ open, initial, onClose, onSaved }:
           </Select>
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Ramal direto"><Input type="number" {...register('direct_extension')} /></Field>
+          <Field label="Ramal direto"><Select {...register('direct_extension')}><option value={0}>Não</option><option value={1}>Sim</option></Select></Field>
           <Field label="Usa feriados"><Select {...register('use_holidays')}><option value={0}>Não</option><option value={1}>Sim</option></Select></Field>
         </div>
         <Field label="Horário Seg–Sex"><Input {...register('monFriStart')} placeholder="ex.: 08:00-18:00" /></Field>

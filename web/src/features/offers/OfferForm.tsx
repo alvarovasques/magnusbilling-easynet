@@ -17,6 +17,7 @@ const schema = z.object({
   packagetype: z.coerce.number().optional(),
   billingtype: z.coerce.number().optional(),
   freetimetocall: z.coerce.number().optional(),
+  startday: z.coerce.number().optional(),
   price: z.coerce.number().min(0, 'Informe o preço'),
   initblock: z.coerce.number().optional(),
   billingblock: z.coerce.number().optional(),
@@ -30,7 +31,7 @@ export function OfferForm({ open, initial, onClose, onSaved }:
   const users = useUserOptions();
   const save = useSave<Offer>(offerResource);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
-  useEffect(() => { reset(initial ? { ...initial } as FormData : { packagetype: 0, billingtype: 0, freetimetocall: 0, initblock: 60, billingblock: 60, minimal_time_charge: 0 } as FormData); }, [initial, open, reset]);
+  useEffect(() => { reset(initial ? { ...initial } as FormData : { packagetype: 0, billingtype: 0, freetimetocall: 0, startday: 1, initblock: 60, billingblock: 60, minimal_time_charge: 0 } as FormData); }, [initial, open, reset]);
   const onSubmit = handleSubmit(async (d) => { await save.mutateAsync(d as Partial<Offer>); onSaved(); onClose(); });
 
   return (
@@ -44,17 +45,18 @@ export function OfferForm({ open, initial, onClose, onSaved }:
           <Field label="Cobrança"><Select {...register('billingtype')}><option value={0}>Mensal</option><option value={1}>Semanal</option></Select></Field>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Tempo grátis p/ ligar"><Input type="number" {...register('freetimetocall')} /></Field>
           <Field label="Preço" error={errors.price?.message}><Input type="number" step="0.001" {...register('price')} /></Field>
+          <Field label="Tempo grátis p/ ligar"><Input type="number" {...register('freetimetocall')} /></Field>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Dia de início do ciclo"><Input type="number" min={1} {...register('startday')} /></Field>
+          <Field label="Tempo mínimo p/ cobrar"><Input type="number" {...register('minimal_time_charge')} /></Field>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Bloco inicial (s)"><Input type="number" {...register('initblock')} /></Field>
           <Field label="Bloco de cobrança (s)"><Input type="number" {...register('billingblock')} /></Field>
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Tempo mínimo p/ cobrar"><Input type="number" {...register('minimal_time_charge')} /></Field>
-          <Field label="Usuário"><Select {...register('id_user')} defaultValue=""><option value="">— nenhum —</option>{users.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</Select></Field>
-        </div>
+        <Field label="Usuário"><Select {...register('id_user')} defaultValue=""><option value="">— nenhum —</option>{users.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</Select></Field>
         {save.isError && <p className="rounded-sm bg-danger-bg px-3 py-2 text-xs text-danger-strong">{(save.error as Error).message}</p>}
       </form>
     </Drawer>

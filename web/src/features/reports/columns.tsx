@@ -28,15 +28,18 @@ export const summaryPerMonthColumns: ColDef<ReportRow>[] = [
   ...metricCols,
 ];
 
+// PERIGO: idUserusername/idTrunktrunkcode são campos de relação concatenados (não são
+// colunas reais da model do summary). Filtrar por eles cai no antifraude "Trying SQL
+// inject" do createCondition e BANE o IP após 3 tentativas — por isso SEM filter.
+// Sort: idUserusername é mapeado por replaceOrder (t.id_user); idTrunktrunkcode NÃO é
+// mapeado, então sortable:false para não quebrar o ORDER BY.
 export const summaryPerUserColumns: ColDef<ReportRow>[] = [
-  { field: 'idUserusername', headerName: 'Cliente', minWidth: 160, pinned: 'left',
-    filter: 'agTextColumnFilter' },
+  { field: 'idUserusername', headerName: 'Cliente', minWidth: 160, pinned: 'left' },
   ...metricCols,
 ];
 
 export const summaryPerTrunkColumns: ColDef<ReportRow>[] = [
-  { field: 'idTrunktrunkcode', headerName: 'Tronco', minWidth: 160, pinned: 'left',
-    filter: 'agTextColumnFilter' },
+  { field: 'idTrunktrunkcode', headerName: 'Tronco', minWidth: 160, pinned: 'left', sortable: false },
   ...metricCols,
 ];
 
@@ -46,13 +49,16 @@ const dialStatus: Record<number, string> = {
   6: 'Canal indisponível', 7: 'Não ligar', 8: 'Tortura', 9: 'Args inválidos', 10: 'Secretária',
 };
 
+// Filtro só em coluna REAL do pkg_cdr_failed (starttime, src, calledstation). O filtro
+// antes estava em idUserusername (relação) — risco de BAN de IP; movido para colunas reais.
+// idTrunktrunkcode não é mapeado por replaceOrder → sortable:false.
 export const callFailedColumns: ColDef<ReportRow>[] = [
-  { field: 'starttime', headerName: 'Data/Hora', minWidth: 160, pinned: 'left' },
-  { field: 'src', headerName: 'Ramal SIP', minWidth: 120 },
-  { field: 'calledstation', headerName: 'Número', minWidth: 140 },
+  { field: 'starttime', headerName: 'Data/Hora', minWidth: 160, pinned: 'left', filter: true },
+  { field: 'src', headerName: 'Ramal SIP', minWidth: 120, filter: true },
+  { field: 'calledstation', headerName: 'Número', minWidth: 140, filter: true },
   { field: 'idPrefixdestination', headerName: 'Destino', minWidth: 160 },
-  { field: 'idUserusername', headerName: 'Cliente', minWidth: 140, filter: 'agTextColumnFilter' },
-  { field: 'idTrunktrunkcode', headerName: 'Tronco', minWidth: 140 },
+  { field: 'idUserusername', headerName: 'Cliente', minWidth: 140 },
+  { field: 'idTrunktrunkcode', headerName: 'Tronco', minWidth: 140, sortable: false },
   { field: 'terminatecauseid', headerName: 'Status', minWidth: 130,
     valueFormatter: (p) => dialStatus[Number(p.value)] ?? String(p.value ?? '') },
   { field: 'hangupcause', headerName: 'Código SIP', minWidth: 120 },

@@ -17,7 +17,13 @@ const schema = z.object({
   name: z.string().min(1, 'Informe o usuário SIP'),
   secret: z.string().optional(),
   callerid: z.string().optional(),
+  context: z.string().optional(),
   host: z.string().optional(),
+  nat: z.string().optional(),
+  qualify: z.string().optional(),
+  dtmfmode: z.string().optional(),
+  directmedia: z.string().optional(),
+  disallow: z.string().optional(),
   allow: z.string().optional(),
   sip_group: z.string().optional(),
 });
@@ -30,7 +36,10 @@ export function SipForm({ open, initial, onClose, onSaved }:
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   useEffect(() => {
-    reset(initial ? { ...initial } as FormData : { host: 'dynamic', allow: 'ulaw,alaw,g729' } as FormData);
+    reset(initial ? { ...initial } as FormData : {
+      host: 'dynamic', context: 'billing', nat: 'force_rport,comedia', qualify: 'yes',
+      dtmfmode: 'RFC2833', directmedia: 'no', disallow: 'all', allow: 'ulaw,alaw,g729',
+    } as FormData);
   }, [initial, open, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
@@ -54,8 +63,20 @@ export function SipForm({ open, initial, onClose, onSaved }:
         <Field label="Usuário SIP" error={errors.name?.message}><Input {...register('name')} placeholder="ex.: 1001" /></Field>
         <Field label="Senha (vazio = gerar automático)" error={errors.secret?.message}><Input {...register('secret')} /></Field>
         <Field label="CallerID" error={errors.callerid?.message}><Input {...register('callerid')} placeholder="Nome <número>" /></Field>
-        <Field label="Host"><Input {...register('host')} placeholder="dynamic ou IP" /></Field>
-        <Field label="Codecs"><Input {...register('allow')} placeholder="ulaw,alaw,g729" /></Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Contexto"><Input {...register('context')} placeholder="billing" /></Field>
+          <Field label="Host"><Input {...register('host')} placeholder="dynamic ou IP" /></Field>
+        </div>
+        <Field label="NAT"><Input {...register('nat')} placeholder="force_rport,comedia" /></Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Qualify"><Select {...register('qualify')}><option value="yes">Sim</option><option value="no">Não</option></Select></Field>
+          <Field label="DTMF"><Select {...register('dtmfmode')}><option value="RFC2833">RFC2833</option><option value="inband">inband</option><option value="info">info</option><option value="auto">auto</option></Select></Field>
+        </div>
+        <Field label="Direct media (RTP direto)"><Select {...register('directmedia')}><option value="no">Não</option><option value="yes">Sim</option><option value="nonat">nonat</option></Select></Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Codecs negados"><Input {...register('disallow')} placeholder="all" /></Field>
+          <Field label="Codecs permitidos"><Input {...register('allow')} placeholder="ulaw,alaw,g729" /></Field>
+        </div>
         <Field label="Grupo"><Input {...register('sip_group')} /></Field>
         {save.isError && <p className="rounded-sm bg-danger-bg px-3 py-2 text-xs text-danger-strong">{(save.error as Error).message}</p>}
       </form>

@@ -30,7 +30,10 @@ export function DataGrid<T>({ columns, datasource, gridOptions, height = '100%' 
         rowModelType="infinite"
         datasource={datasource}
         cacheBlockSize={50}
-        defaultColDef={{ sortable: true, resizable: true, filter: true, minWidth: 110 }}
+        // filtro DESLIGADO por padrão: filtrar coluna que não é do banco (computada/
+        // relação) pode disparar o antifraude do backend. Cada coluna real habilita
+        // filter:true explicitamente (ver colunas das features).
+        defaultColDef={{ sortable: true, resizable: true, filter: false, minWidth: 110 }}
         localeText={{ noRowsToShow: 'Sem registros', loadingOoo: 'Carregando…' }}
         {...gridOptions}
       />

@@ -3,7 +3,9 @@ import { Plus, Wallet } from 'lucide-react';
 import type { GridApi, GridReadyEvent, RowClickedEvent } from 'ag-grid-community';
 import { DataGrid } from '@/design-system/components/DataGrid';
 import { Button } from '@/design-system/components/Button';
+import { DeleteAction } from '@/design-system/components/DeleteAction';
 import { makeInfiniteDatasource } from '@/api/aggrid';
+import { useDelete } from '@/api/hooks';
 import { userResource, User } from './api';
 import { userColumns } from './columns';
 import { UserForm } from './UserForm';
@@ -17,15 +19,19 @@ export function UsersPage() {
   const [open, setOpen] = useState(false);
   const [refillUser, setRefillUser] = useState<number | undefined>();
   const [refillOpen, setRefillOpen] = useState(false);
+  const del = useDelete(userResource);
 
   const columns: ColDef<User>[] = useMemo(() => [
     ...userColumns,
-    { headerName: '', width: 60, pinned: 'right', sortable: false, filter: false, resizable: false,
+    { headerName: '', width: 92, pinned: 'right', sortable: false, filter: false, resizable: false,
       cellRenderer: (p: any) => (
-        <button title="Recarregar" className="text-primary hover:text-primary-hover"
-          onClick={(e) => { e.stopPropagation(); setRefillUser(p.data?.id); setRefillOpen(true); }}>
-          <Wallet size={16} />
-        </button>
+        <div className="flex items-center gap-3">
+          <button title="Recarregar" className="text-primary hover:text-primary-hover"
+            onClick={(e) => { e.stopPropagation(); setRefillUser(p.data?.id); setRefillOpen(true); }}>
+            <Wallet size={16} />
+          </button>
+          <DeleteAction onConfirm={async () => { await del.mutateAsync(p.data.id); api.current?.refreshInfiniteCache(); }} />
+        </div>
       ) },
   ], []);
 

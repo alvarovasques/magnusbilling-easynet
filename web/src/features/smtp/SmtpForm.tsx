@@ -15,7 +15,8 @@ const schema = z.object({
   id: z.number().optional(),
   id_user: z.coerce.number().optional(),
   host: z.string().min(1, 'Host obrigatório'),
-  username: z.string().min(1, 'Usuário/e-mail obrigatório'),
+  // Backend (model Smtps) não exige username; relays sem autenticação são válidos.
+  username: z.string().optional(),
   password: z.string().optional(),
   port: z.string().optional(),
   encryption: z.string().optional(),

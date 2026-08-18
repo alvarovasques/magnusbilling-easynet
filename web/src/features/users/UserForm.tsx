@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { useEffect } from 'react';
 import { User, userResource } from './api';
 import { useSave } from '@/api/hooks';
+import { usePlanOptions } from '@/api/options';
 import { Drawer } from '@/design-system/components/Drawer';
 import { Field } from '@/design-system/components/Field';
 import { Input } from '@/design-system/components/Input';
@@ -21,6 +22,8 @@ const schema = z.object({
   creditlimit: z.coerce.number().optional(),
   typepaid: z.coerce.number().optional(),
   active: z.coerce.number().optional(),
+  id_plan: z.coerce.number().optional(),
+  credit_notification: z.coerce.number().optional(),
   password: z.string().optional(),
 }).superRefine((data, ctx) => {
   // Senha é obrigatória no cadastro (sem id). Na edição, vazio = mantém a atual.
@@ -32,9 +35,10 @@ type FormData = z.infer<typeof schema>;
 
 export function UserForm({ open, initial, onClose, onSaved }:
   { open: boolean; initial?: User | null; onClose: () => void; onSaved: () => void }) {
+  const plans = usePlanOptions();
   const save = useSave<User>(userResource);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
-  useEffect(() => { reset(initial ? { ...initial } as FormData : { active: 1, typepaid: 0 } as FormData); }, [initial, open, reset]);
+  useEffect(() => { reset(initial ? { ...initial } as FormData : { active: 1, typepaid: 0, credit_notification: 10 } as FormData); }, [initial, open, reset]);
   const onSubmit = handleSubmit(async (d) => { const p = { ...d }; if (!p.password) delete (p as any).password; await save.mutateAsync(p as Partial<User>); onSaved(); onClose(); });
 
   return (
@@ -56,6 +60,10 @@ export function UserForm({ open, initial, onClose, onSaved }:
         <div className="grid grid-cols-2 gap-3">
           <Field label="Tipo"><Select {...register('typepaid')}><option value={0}>Pré-pago</option><option value={1}>Pós-pago</option></Select></Field>
           <Field label="Status"><Select {...register('active')}><option value={1}>Ativo</option><option value={0}>Inativo</option></Select></Field>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Plano"><Select {...register('id_plan')} defaultValue=""><option value="">{plans.isLoading ? 'Carregando…' : '— nenhum —'}</option>{plans.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</Select></Field>
+          <Field label="Avisar saldo baixo (R$)"><Input type="number" {...register('credit_notification')} /></Field>
         </div>
         <Field label={initial?.id ? 'Nova senha (deixe vazio p/ manter)' : 'Senha'} error={errors.password?.message}><Input type="password" {...register('password')} /></Field>
         {save.isError && <p className="rounded-sm bg-danger-bg px-3 py-2 text-xs text-danger-strong">{(save.error as Error).message}</p>}

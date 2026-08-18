@@ -22,6 +22,13 @@ const schema = z.object({
   secret: z.string().optional(),
   trunkprefix: z.string().optional(),
   removeprefix: z.string().optional(),
+  register: z.coerce.number().optional(),
+  register_string: z.string().optional(),
+  fromuser: z.string().optional(),
+  fromdomain: z.string().optional(),
+  port: z.coerce.number().optional(),
+  transport: z.string().optional(),
+  dtmfmode: z.string().optional(),
   status: z.coerce.number().optional(),
 });
 type FormData = z.infer<typeof schema>;
@@ -31,7 +38,7 @@ export function TrunkForm({ open, initial, onClose, onSaved }:
   const providers = useProviderOptions();
   const save = useSave<Trunk>(trunkResource);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
-  useEffect(() => { reset(initial ? { ...initial } as FormData : { providertech: 'pjsip', host: 'dynamic', allow: 'ulaw,alaw,g729', status: 1 } as FormData); }, [initial, open, reset]);
+  useEffect(() => { reset(initial ? { ...initial } as FormData : { providertech: 'pjsip', host: 'dynamic', allow: 'ulaw,alaw,g729', register: 0, port: 5060, transport: 'udp', dtmfmode: 'RFC2833', status: 1 } as FormData); }, [initial, open, reset]);
   const onSubmit = handleSubmit(async (d) => { await save.mutateAsync(d as Partial<Trunk>); onSaved(); onClose(); });
 
   return (
@@ -59,6 +66,17 @@ export function TrunkForm({ open, initial, onClose, onSaved }:
           <Field label="Add prefixo"><Input {...register('trunkprefix')} /></Field>
           <Field label="Remove prefixo"><Input {...register('removeprefix')} /></Field>
         </div>
+        <div className="grid grid-cols-3 gap-3">
+          <Field label="Porta"><Input type="number" {...register('port')} placeholder="5060" /></Field>
+          <Field label="Transporte"><Select {...register('transport')}><option value="udp">UDP</option><option value="tcp">TCP</option><option value="tls">TLS</option></Select></Field>
+          <Field label="DTMF"><Select {...register('dtmfmode')}><option value="RFC2833">RFC2833</option><option value="inband">inband</option><option value="info">info</option><option value="auto">auto</option></Select></Field>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="From user"><Input {...register('fromuser')} /></Field>
+          <Field label="From domain"><Input {...register('fromdomain')} /></Field>
+        </div>
+        <Field label="Registrar no provedor"><Select {...register('register')}><option value={0}>Não</option><option value={1}>Sim</option></Select></Field>
+        <Field label="Register string"><Input {...register('register_string')} placeholder="user:pass@host/extension" /></Field>
         <Field label="Ativo"><Select {...register('status')}><option value={1}>Sim</option><option value={0}>Não</option></Select></Field>
         {save.isError && <p className="rounded-sm bg-danger-bg px-3 py-2 text-xs text-danger-strong">{(save.error as Error).message}</p>}
       </form>

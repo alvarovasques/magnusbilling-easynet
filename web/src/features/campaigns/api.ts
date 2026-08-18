@@ -6,6 +6,9 @@ export interface Campaign {
   id?: number; name: string; id_user?: number; id_plan?: number;
   idUserusername?: string; idPlanname?: string;
   type?: number; status?: number; callerid?: string; audio?: string; description?: string;
+  // type=2 (WhatsApp): colunas reais (ALTER via UpdateMysqlCommand). O beforeSave EXIGE
+  // whatsapp_template_name != '' quando type===2, senão devolve erro de validação.
+  whatsapp_template_name?: string; whatsapp_template_language?: string;
   frequency?: number; max_frequency?: number;
   startingdate?: string; expirationdate?: string;
   daily_start_time?: string; daily_stop_time?: string;

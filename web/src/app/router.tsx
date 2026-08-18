@@ -12,6 +12,7 @@ const DashboardPage = L(() => import('@/features/dashboard/DashboardPage'), 'Das
 const CallOnlinePage = L(() => import('@/features/callonline/CallOnlinePage'), 'CallOnlinePage');
 const SipPage = L(() => import('@/features/sip/SipPage'), 'SipPage');
 const DidsPage = L(() => import('@/features/dids/DidsPage'), 'DidsPage');
+const DidDestinationPage = L(() => import('@/features/didDestination/DidDestinationPage'), 'DidDestinationPage');
 const TrunksPage = L(() => import('@/features/trunks/TrunksPage'), 'TrunksPage');
 const ProvidersPage = L(() => import('@/features/providers/ProvidersPage'), 'ProvidersPage');
 const PrefixesPage = L(() => import('@/features/prefixes/PrefixesPage'), 'PrefixesPage');
@@ -60,6 +61,7 @@ export const router = createBrowserRouter([
       // Telefonia
       { path: 'sip', element: <SipPage /> },
       { path: 'dids', element: <DidsPage /> },
+      { path: 'did-destino', element: <DidDestinationPage /> },
       { path: 'rotas', element: <TrunksPage /> },
       { path: 'ata-linksys', element: <SipurasPage /> },
       { path: 'cnl', element: <ProviderCNLPage /> },

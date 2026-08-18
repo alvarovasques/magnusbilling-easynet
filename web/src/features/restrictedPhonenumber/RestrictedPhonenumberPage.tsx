@@ -1,9 +1,11 @@
 import { useMemo, useRef, useState } from 'react';
 import { Plus } from 'lucide-react';
-import type { GridApi, GridReadyEvent, RowClickedEvent } from 'ag-grid-community';
+import type { GridApi, GridReadyEvent, RowClickedEvent, ColDef } from 'ag-grid-community';
 import { DataGrid } from '@/design-system/components/DataGrid';
 import { Button } from '@/design-system/components/Button';
+import { DeleteAction } from '@/design-system/components/DeleteAction';
 import { makeInfiniteDatasource } from '@/api/aggrid';
+import { useDelete } from '@/api/hooks';
 import { restrictedPhonenumberResource, RestrictedPhonenumber } from './api';
 import { restrictedPhonenumberColumns } from './columns';
 import { RestrictedPhonenumberForm } from './RestrictedPhonenumberForm';
@@ -13,8 +15,15 @@ export function RestrictedPhonenumberPage() {
   const gridApi = useRef<GridApi<RestrictedPhonenumber> | null>(null);
   const [editing, setEditing] = useState<RestrictedPhonenumber | null>(null);
   const [open, setOpen] = useState(false);
+  const del = useDelete(restrictedPhonenumberResource);
 
   const refresh = () => gridApi.current?.refreshInfiniteCache();
+
+  const columns: ColDef<RestrictedPhonenumber>[] = useMemo(() => [
+    ...restrictedPhonenumberColumns,
+    { headerName: '', width: 56, pinned: 'right', sortable: false, filter: false, resizable: false,
+      cellRenderer: (p: any) => <DeleteAction onConfirm={async () => { await del.mutateAsync(p.data.id); refresh(); }} /> },
+  ], []);
   const openNew = () => { setEditing(null); setOpen(true); };
   const openEdit = (e: RowClickedEvent<RestrictedPhonenumber>) => { if (e.data) { setEditing(e.data); setOpen(true); } };
 
@@ -28,7 +37,7 @@ export function RestrictedPhonenumberPage() {
         <Button onClick={openNew}><Plus size={16} /> Novo bloqueio</Button>
       </div>
       <div className="flex-1 overflow-hidden rounded ring-1 ring-line">
-        <DataGrid<RestrictedPhonenumber> columns={restrictedPhonenumberColumns} datasource={datasource}
+        <DataGrid<RestrictedPhonenumber> columns={columns} datasource={datasource}
           gridOptions={{
             onGridReady: (e: GridReadyEvent<RestrictedPhonenumber>) => { gridApi.current = e.api; },
             onRowClicked: openEdit,

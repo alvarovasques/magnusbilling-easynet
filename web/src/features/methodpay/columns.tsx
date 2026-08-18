@@ -3,9 +3,9 @@ import { Methodpay } from './api';
 import { Badge } from '@/design-system/components/Badge';
 const money = (v: unknown) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(v ?? 0));
 export const methodpayColumns: ColDef<Methodpay>[] = [
-  { field: 'payment_method', headerName: 'Forma de pagamento', minWidth: 180, pinned: 'left' },
+  { field: 'payment_method', headerName: 'Forma de pagamento', minWidth: 180, pinned: 'left', filter: true },
   { field: 'show_name', headerName: 'Exibição', minWidth: 160 },
-  { field: 'country', headerName: 'País', minWidth: 110 },
+  { field: 'country', headerName: 'País', minWidth: 110, filter: true },
   { field: 'fee', headerName: 'Taxa', minWidth: 100, type: 'rightAligned' },
   { field: 'min', headerName: 'Mínimo', minWidth: 110, type: 'rightAligned', valueFormatter: (p) => money(p.value) },
   { field: 'max', headerName: 'Máximo', minWidth: 110, type: 'rightAligned', valueFormatter: (p) => money(p.value) },

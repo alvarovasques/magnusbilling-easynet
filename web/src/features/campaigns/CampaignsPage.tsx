@@ -3,7 +3,9 @@ import { Plus, Play, Pause, Send } from 'lucide-react';
 import type { GridApi, GridReadyEvent, RowClickedEvent, ColDef } from 'ag-grid-community';
 import { DataGrid } from '@/design-system/components/DataGrid';
 import { Button } from '@/design-system/components/Button';
+import { DeleteAction } from '@/design-system/components/DeleteAction';
 import { makeInfiniteDatasource } from '@/api/aggrid';
+import { useDelete } from '@/api/hooks';
 import { campaignResource, Campaign, setCampaignStatus, testCampaign } from './api';
 import { campaignColumns } from './columns';
 import { CampaignForm } from './CampaignForm';
@@ -14,10 +16,11 @@ export function CampaignsPage() {
   const [editing, setEditing] = useState<Campaign | null>(null);
   const [open, setOpen] = useState(false);
   const refresh = () => api.current?.refreshInfiniteCache();
+  const del = useDelete(campaignResource);
 
   const columns: ColDef<Campaign>[] = useMemo(() => [
     ...campaignColumns,
-    { headerName: '', width: 96, pinned: 'right', sortable: false, filter: false,
+    { headerName: '', width: 128, pinned: 'right', sortable: false, filter: false, resizable: false,
       cellRenderer: (p: any) => {
         const c: Campaign = p.data ?? {};
         if (!c.id) return null;
@@ -32,6 +35,7 @@ export function CampaignsPage() {
               onClick={async (e) => { e.stopPropagation(); await testCampaign(c.id!); }}>
               <Send size={16} />
             </button>
+            <DeleteAction onConfirm={async () => { await del.mutateAsync(c.id!); refresh(); }} />
           </div>
         );
       } },

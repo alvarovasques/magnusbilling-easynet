@@ -22,6 +22,8 @@ const schema = z.object({
   allow: z.string().optional(),
   type: z.string().optional(),
   qualify: z.string().optional(),
+  nat: z.string().optional(),
+  dtmfmode: z.string().optional(),
 });
 type FormData = z.infer<typeof schema>;
 
@@ -34,7 +36,7 @@ export function IaxForm({ open, initial, onClose, onSaved }:
   useEffect(() => {
     reset(initial
       ? { ...initial, username: initial.username ?? initial.name } as FormData
-      : { host: 'dynamic', context: 'billing', type: 'friend', qualify: 'yes', allow: 'ulaw,alaw,g729' } as FormData);
+      : { host: 'dynamic', context: 'billing', type: 'friend', qualify: 'yes', dtmfmode: 'RFC2833', allow: 'ulaw,alaw,g729' } as FormData);
   }, [initial, open, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
@@ -64,6 +66,10 @@ export function IaxForm({ open, initial, onClose, onSaved }:
         <div className="grid grid-cols-2 gap-3">
           <Field label="Tipo"><Select {...register('type')}><option value="friend">friend</option><option value="user">user</option><option value="peer">peer</option></Select></Field>
           <Field label="Qualify"><Select {...register('qualify')}><option value="yes">Sim</option><option value="no">Não</option></Select></Field>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="NAT"><Input {...register('nat')} placeholder="force_rport,comedia" /></Field>
+          <Field label="DTMF"><Select {...register('dtmfmode')}><option value="RFC2833">RFC2833</option><option value="inband">inband</option><option value="info">info</option><option value="auto">auto</option></Select></Field>
         </div>
         {save.isError && <p className="rounded-sm bg-danger-bg px-3 py-2 text-xs text-danger-strong">{(save.error as Error).message}</p>}
       </form>

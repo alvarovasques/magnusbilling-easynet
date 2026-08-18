@@ -19,6 +19,8 @@ const schema = z.object({
   callerid: z.string().optional(),
   audio: z.string().optional(),
   description: z.string().optional(),
+  whatsapp_template_name: z.string().optional(),
+  whatsapp_template_language: z.string().optional(),
   frequency: z.coerce.number().optional(),
   max_frequency: z.coerce.number().optional(),
   startingdate: z.string().optional(),
@@ -33,7 +35,8 @@ export function CampaignForm({ open, initial, onClose, onSaved }:
   { open: boolean; initial?: Campaign | null; onClose: () => void; onSaved: () => void }) {
   const users = useUserOptions();
   const save = useSave<Campaign>(campaignResource);
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const isWhatsapp = Number(watch('type')) === 2;
   useEffect(() => {
     reset(initial ? { ...initial } as FormData
       : { type: 1, status: 0, frequency: 10, max_frequency: 10, daily_start_time: '08:00:00', daily_stop_time: '18:00:00' } as FormData);
@@ -56,6 +59,16 @@ export function CampaignForm({ open, initial, onClose, onSaved }:
           <Field label="Tipo"><Select {...register('type')}><option value={1}>Torpedo de voz</option><option value={0}>SMS</option><option value={2}>WhatsApp</option></Select></Field>
           <Field label="Situação"><Select {...register('status')}><option value={0}>Pausada</option><option value={1}>Ativa</option></Select></Field>
         </div>
+        {isWhatsapp && (
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Template do WhatsApp" error={errors.whatsapp_template_name?.message}>
+              <Input {...register('whatsapp_template_name')} placeholder="ex.: hello_world" />
+            </Field>
+            <Field label="Idioma do template">
+              <Input {...register('whatsapp_template_language')} placeholder="ex.: pt_BR" />
+            </Field>
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-3">
           <Field label="Bina (CallerID)"><Input {...register('callerid')} /></Field>
           <Field label="Áudio / IVR"><Input {...register('audio')} placeholder="arquivo ou id do IVR" /></Field>

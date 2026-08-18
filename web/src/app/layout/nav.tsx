@@ -14,6 +14,7 @@ export const NAV: NavGroup[] = [
   { title: 'Telefonia', items: [
     { to: '/sip', label: 'Troncos / Contas SIP', icon: Network },
     { to: '/dids', label: 'Numeração / DIDs', icon: Hash },
+    { to: '/did-destino', label: 'Destino dos DIDs', icon: PhoneCall },
     { to: '/rotas', label: 'Rotas / Troncos', icon: Route },
     { to: '/ata-linksys', label: 'ATA Linksys', icon: RouterIcon },
     { to: '/cnl', label: 'CNL / Portabilidade', icon: MapPin },

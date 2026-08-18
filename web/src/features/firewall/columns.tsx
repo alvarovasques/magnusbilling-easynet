@@ -8,7 +8,9 @@ export const firewallColumns: ColDef<Firewall>[] = [
       ? <Badge tone="success">Liberado</Badge>
       : <Badge tone="danger">Bloqueado</Badge>) },
   { field: 'jail', headerName: 'Jail', minWidth: 140 },
-  { field: 'idServername', headerName: 'Servidor', minWidth: 150 },
+  // idServername é extraValue de relação (idServer->name), não é coluna da tabela base:
+  // não filtrar nem ordenar (ORDER BY dispararia erro de SQL no read).
+  { field: 'idServername', headerName: 'Servidor', minWidth: 150, sortable: false, filter: false },
   { field: 'date', headerName: 'Data', minWidth: 160 },
   { field: 'description', headerName: 'Descrição', minWidth: 220, flex: 1 },
 ];

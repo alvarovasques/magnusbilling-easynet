@@ -1,9 +1,11 @@
 import { useMemo, useRef, useState } from 'react';
 import { Plus } from 'lucide-react';
-import type { GridApi, GridReadyEvent, RowClickedEvent } from 'ag-grid-community';
+import type { GridApi, GridReadyEvent, RowClickedEvent, ColDef } from 'ag-grid-community';
 import { DataGrid } from '@/design-system/components/DataGrid';
 import { Button } from '@/design-system/components/Button';
+import { DeleteAction } from '@/design-system/components/DeleteAction';
 import { makeInfiniteDatasource } from '@/api/aggrid';
+import { useDelete } from '@/api/hooks';
 import { sipurasResource, Sipuras } from './api';
 import { sipurasColumns } from './columns';
 import { SipurasForm } from './SipurasForm';
@@ -13,8 +15,15 @@ export function SipurasPage() {
   const gridApi = useRef<GridApi<Sipuras> | null>(null);
   const [editing, setEditing] = useState<Sipuras | null>(null);
   const [open, setOpen] = useState(false);
+  const del = useDelete(sipurasResource);
 
   const refresh = () => gridApi.current?.refreshInfiniteCache();
+
+  const columns: ColDef<Sipuras>[] = useMemo(() => [
+    ...sipurasColumns,
+    { headerName: '', width: 56, pinned: 'right', sortable: false, filter: false, resizable: false,
+      cellRenderer: (p: any) => <DeleteAction onConfirm={async () => { await del.mutateAsync(p.data.id); refresh(); }} /> },
+  ], []);
   const openNew = () => { setEditing(null); setOpen(true); };
   const openEdit = (e: RowClickedEvent<Sipuras>) => { if (e.data) { setEditing(e.data); setOpen(true); } };
 
@@ -28,7 +37,7 @@ export function SipurasPage() {
         <Button onClick={openNew}><Plus size={16} /> Novo ATA</Button>
       </div>
       <div className="flex-1 overflow-hidden rounded ring-1 ring-line">
-        <DataGrid<Sipuras> columns={sipurasColumns} datasource={datasource}
+        <DataGrid<Sipuras> columns={columns} datasource={datasource}
           gridOptions={{
             onGridReady: (e: GridReadyEvent<Sipuras>) => { gridApi.current = e.api; },
             onRowClicked: openEdit,

@@ -11,11 +11,12 @@ function StatusCell({ value }: { value?: string }) {
 }
 
 export const sipColumns: ColDef<Sip>[] = [
-  { field: 'name', headerName: 'Usuário SIP', minWidth: 150, pinned: 'left' },
+  { field: 'name', headerName: 'Usuário SIP', minWidth: 150, pinned: 'left', filter: true },
+  // idUserusername é extraValue de relação (idUser->username): NÃO filtrar.
   { field: 'idUserusername', headerName: 'Cliente', minWidth: 150 },
   { field: 'lineStatus', headerName: 'Registro', minWidth: 150, cellRenderer: StatusCell, filter: false, sortable: false },
-  { field: 'callerid', headerName: 'CallerID', minWidth: 140 },
-  { field: 'host', headerName: 'Host', minWidth: 120 },
-  { field: 'allow', headerName: 'Codecs', minWidth: 140 },
-  { field: 'sip_group', headerName: 'Grupo', minWidth: 110 },
+  { field: 'callerid', headerName: 'CallerID', minWidth: 140, filter: true },
+  { field: 'host', headerName: 'Host', minWidth: 120, filter: true },
+  { field: 'allow', headerName: 'Codecs', minWidth: 140, filter: true },
+  { field: 'sip_group', headerName: 'Grupo', minWidth: 110, filter: true },
 ];

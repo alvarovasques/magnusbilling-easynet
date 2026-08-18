@@ -1,9 +1,11 @@
 import { useMemo, useRef, useState } from 'react';
 import { Plus } from 'lucide-react';
-import type { GridApi, GridReadyEvent, RowClickedEvent } from 'ag-grid-community';
+import type { GridApi, GridReadyEvent, RowClickedEvent, ColDef } from 'ag-grid-community';
 import { DataGrid } from '@/design-system/components/DataGrid';
 import { Button } from '@/design-system/components/Button';
+import { DeleteAction } from '@/design-system/components/DeleteAction';
 import { makeInfiniteDatasource } from '@/api/aggrid';
+import { useDelete } from '@/api/hooks';
 import { voucherResource, Voucher } from './api';
 import { voucherColumns } from './columns';
 import { VoucherForm } from './VoucherForm';
@@ -13,6 +15,13 @@ export function VoucherPage() {
   const api = useRef<GridApi<Voucher> | null>(null);
   const [editing, setEditing] = useState<Voucher | null>(null);
   const [open, setOpen] = useState(false);
+  const del = useDelete(voucherResource);
+
+  const columns: ColDef<Voucher>[] = useMemo(() => [
+    ...voucherColumns,
+    { headerName: '', width: 56, pinned: 'right', sortable: false, filter: false, resizable: false,
+      cellRenderer: (p: any) => <DeleteAction onConfirm={async () => { await del.mutateAsync(p.data.id); api.current?.refreshInfiniteCache(); }} /> },
+  ], []);
 
   return (
     <div className="flex h-[calc(100vh-92px)] flex-col">
@@ -22,7 +31,7 @@ export function VoucherPage() {
         <Button onClick={() => { setEditing(null); setOpen(true); }}><Plus size={16} /> Novo voucher</Button>
       </div>
       <div className="flex-1 overflow-hidden rounded ring-1 ring-line">
-        <DataGrid<Voucher> columns={voucherColumns} datasource={datasource}
+        <DataGrid<Voucher> columns={columns} datasource={datasource}
           gridOptions={{
             onGridReady: (e: GridReadyEvent<Voucher>) => { api.current = e.api; },
             onRowClicked: (e: RowClickedEvent<Voucher>) => { if (e.data) { setEditing(e.data); setOpen(true); } },
