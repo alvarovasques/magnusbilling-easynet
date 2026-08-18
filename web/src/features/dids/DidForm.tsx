@@ -15,8 +15,7 @@ const schema = z.object({
   id: z.number().optional(),
   did: z.string().min(1, 'Informe o número'),
   id_user: z.coerce.number().optional(),
-  monthlycharge: z.coerce.number().optional(),
-  charge: z.coerce.number().optional(),
+  connection_charge: z.coerce.number().optional(),
 });
 type FormData = z.infer<typeof schema>;
 
@@ -40,10 +39,7 @@ export function DidForm({ open, initial, onClose, onSaved }:
             {users.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </Select>
         </Field>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Mensalidade (R$)"><Input type="number" step="0.01" {...register('monthlycharge')} /></Field>
-          <Field label="Setup (R$)"><Input type="number" step="0.01" {...register('charge')} /></Field>
-        </div>
+        <Field label="Custo de conexão / Setup (R$)"><Input type="number" step="0.01" {...register('connection_charge')} /></Field>
         {save.isError && <p className="rounded-sm bg-danger-bg px-3 py-2 text-xs text-danger-strong">{(save.error as Error).message}</p>}
       </form>
     </Drawer>

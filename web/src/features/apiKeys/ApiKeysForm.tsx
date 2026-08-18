@@ -22,13 +22,31 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
+// Gera uma credencial aleatória (hex) — o backend exige api_key/api_secret
+// obrigatórios, sem espaços, mínimo 15 caracteres e únicos. Não há geração
+// automática no servidor, então o valor precisa vir preenchido no cadastro.
+function randomCredential(): string {
+  const bytes = new Uint8Array(20);
+  (globalThis.crypto ?? window.crypto).getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
 export function ApiKeysForm({ open, initial, onClose, onSaved }:
   { open: boolean; initial?: ApiKey | null; onClose: () => void; onSaved: () => void }) {
   const users = useUserOptions();
   const save = useSave<ApiKey>(apiKeysResource);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
-  useEffect(() => { reset(initial ? { ...initial } as FormData : { status: 1, action: 'all' } as FormData); }, [initial, open, reset]);
-  const onSubmit = handleSubmit(async (d) => { const p = { ...d }; if (!p.api_secret) delete (p as any).api_secret; await save.mutateAsync(p as Partial<ApiKey>); onSaved(); onClose(); });
+  useEffect(() => {
+    reset(initial
+      ? { ...initial } as FormData
+      : { status: 1, action: 'all', api_key: randomCredential(), api_secret: randomCredential() } as FormData);
+  }, [initial, open, reset]);
+  const onSubmit = handleSubmit(async (d) => {
+    const p = { ...d };
+    // Na edição o segredo vem mascarado (ex.: "abc123******"); nunca reenviar o valor mascarado.
+    if (!p.api_secret || p.api_secret.includes('*')) delete (p as any).api_secret;
+    await save.mutateAsync(p as Partial<ApiKey>); onSaved(); onClose();
+  });
 
   return (
     <Drawer open={open} title={initial?.id ? 'Editar chave de API' : 'Nova chave de API'} onClose={onClose}

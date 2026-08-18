@@ -7,6 +7,5 @@ export const didColumns: ColDef<Did>[] = [
   { headerName: 'Situação', minWidth: 140, sortable: false, filter: false,
     cellRenderer: (p: any) => { const s = didStatus(p.data ?? {}); return <Badge tone={s.tone}>{s.label}</Badge>; } },
   { field: 'idUserusername', headerName: 'Cliente', minWidth: 150 },
-  { field: 'monthlycharge', headerName: 'Mensalidade', minWidth: 130, type: 'rightAligned', valueFormatter: (p) => money(p.value) },
-  { field: 'charge', headerName: 'Setup', minWidth: 120, type: 'rightAligned', valueFormatter: (p) => money(p.value) },
+  { field: 'connection_charge', headerName: 'Custo conexão', minWidth: 140, type: 'rightAligned', valueFormatter: (p) => money(p.value) },
 ];

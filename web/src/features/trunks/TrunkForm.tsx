@@ -14,12 +14,13 @@ import { Button } from '@/design-system/components/Button';
 const schema = z.object({
   id: z.number().optional(),
   trunkcode: z.string().min(1, 'Informe o nome do tronco'),
-  id_provider: z.coerce.number().optional(),
-  providertech: z.string().optional(),
-  host: z.string().optional(),
-  user_name: z.string().optional(),
+  id_provider: z.coerce.number({ invalid_type_error: 'Selecione o provedor' }).min(1, 'Selecione o provedor'),
+  providertech: z.string().min(1, 'Informe a tecnologia'),
+  host: z.string().min(1, 'Informe o host'),
+  allow: z.string().min(1, 'Informe os codecs'),
+  user: z.string().optional(),
   secret: z.string().optional(),
-  addprefix: z.string().optional(),
+  trunkprefix: z.string().optional(),
   removeprefix: z.string().optional(),
   status: z.coerce.number().optional(),
 });
@@ -30,7 +31,7 @@ export function TrunkForm({ open, initial, onClose, onSaved }:
   const providers = useProviderOptions();
   const save = useSave<Trunk>(trunkResource);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
-  useEffect(() => { reset(initial ? { ...initial } as FormData : { providertech: 'pjsip', host: 'dynamic', status: 1 } as FormData); }, [initial, open, reset]);
+  useEffect(() => { reset(initial ? { ...initial } as FormData : { providertech: 'pjsip', host: 'dynamic', allow: 'ulaw,alaw,g729', status: 1 } as FormData); }, [initial, open, reset]);
   const onSubmit = handleSubmit(async (d) => { await save.mutateAsync(d as Partial<Trunk>); onSaved(); onClose(); });
 
   return (
@@ -39,9 +40,9 @@ export function TrunkForm({ open, initial, onClose, onSaved }:
         <Button onClick={onSubmit} disabled={save.isPending}>{save.isPending ? 'Salvando…' : 'Salvar'}</Button></>}>
       <form onSubmit={onSubmit} className="space-y-4">
         <Field label="Nome do tronco" error={errors.trunkcode?.message}><Input {...register('trunkcode')} /></Field>
-        <Field label="Provedor">
+        <Field label="Provedor" error={errors.id_provider?.message}>
           <Select {...register('id_provider')} defaultValue="">
-            <option value="">{providers.isLoading ? 'Carregando…' : '— nenhum —'}</option>
+            <option value="" disabled>{providers.isLoading ? 'Carregando…' : 'Selecione o provedor'}</option>
             {providers.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </Select>
         </Field>
@@ -50,11 +51,12 @@ export function TrunkForm({ open, initial, onClose, onSaved }:
           <Field label="Host"><Input {...register('host')} placeholder="IP ou dynamic" /></Field>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Usuário"><Input {...register('user_name')} /></Field>
+          <Field label="Usuário"><Input {...register('user')} /></Field>
           <Field label="Senha"><Input {...register('secret')} /></Field>
         </div>
+        <Field label="Codecs" error={errors.allow?.message}><Input {...register('allow')} placeholder="ulaw,alaw,g729" /></Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Add prefixo"><Input {...register('addprefix')} /></Field>
+          <Field label="Add prefixo"><Input {...register('trunkprefix')} /></Field>
           <Field label="Remove prefixo"><Input {...register('removeprefix')} /></Field>
         </div>
         <Field label="Ativo"><Select {...register('status')}><option value={1}>Sim</option><option value={0}>Não</option></Select></Field>

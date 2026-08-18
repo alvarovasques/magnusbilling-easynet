@@ -2,7 +2,7 @@ import { createResource } from '@/api/crud';
 import { apiPost } from '@/api/client';
 export interface Did {
   id?: number; did: string; id_user?: number; idUserusername?: string;
-  activated?: number; reserved?: number; charge?: number; monthlycharge?: number; connection_charge?: number;
+  activated?: number; reserved?: number; connection_charge?: number;
 }
 export const didResource = createResource<Did>('did');
 // Devolve o DID ao pool (desassocia do cliente).

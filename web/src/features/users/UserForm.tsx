@@ -12,7 +12,7 @@ import { Button } from '@/design-system/components/Button';
 
 const schema = z.object({
   id: z.number().optional(),
-  username: z.string().min(3, 'Mínimo 3 caracteres'),
+  username: z.string().min(4, 'Mínimo 4 caracteres'),
   firstname: z.string().optional(),
   lastname: z.string().optional(),
   email: z.string().email('E-mail inválido').optional().or(z.literal('')),
@@ -22,6 +22,11 @@ const schema = z.object({
   typepaid: z.coerce.number().optional(),
   active: z.coerce.number().optional(),
   password: z.string().optional(),
+}).superRefine((data, ctx) => {
+  // Senha é obrigatória no cadastro (sem id). Na edição, vazio = mantém a atual.
+  if (!data.id && !data.password) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['password'], message: 'Informe a senha' });
+  }
 });
 type FormData = z.infer<typeof schema>;
 
@@ -52,7 +57,7 @@ export function UserForm({ open, initial, onClose, onSaved }:
           <Field label="Tipo"><Select {...register('typepaid')}><option value={0}>Pré-pago</option><option value={1}>Pós-pago</option></Select></Field>
           <Field label="Status"><Select {...register('active')}><option value={1}>Ativo</option><option value={0}>Inativo</option></Select></Field>
         </div>
-        <Field label={initial?.id ? 'Nova senha (deixe vazio p/ manter)' : 'Senha'}><Input type="password" {...register('password')} /></Field>
+        <Field label={initial?.id ? 'Nova senha (deixe vazio p/ manter)' : 'Senha'} error={errors.password?.message}><Input type="password" {...register('password')} /></Field>
         {save.isError && <p className="rounded-sm bg-danger-bg px-3 py-2 text-xs text-danger-strong">{(save.error as Error).message}</p>}
       </form>
     </Drawer>

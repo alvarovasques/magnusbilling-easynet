@@ -14,10 +14,9 @@ import { Button } from '@/design-system/components/Button';
 const schema = z.object({
   id: z.number().optional(),
   id_prefix: z.coerce.number().min(1, 'Selecione o prefixo/destino'),
-  id_plan: z.coerce.number().optional(),
-  id_trunk: z.coerce.number().optional(),
+  id_plan: z.coerce.number({ invalid_type_error: 'Selecione o plano' }).min(1, 'Selecione o plano'),
+  id_trunk_group: z.coerce.number().optional(),
   rateinitial: z.coerce.number().min(0, 'Informe a tarifa'),
-  rate_offpeak: z.coerce.number().optional(),
   billingblock: z.coerce.number().optional(),
   connectcharge: z.coerce.number().optional(),
 });
@@ -43,13 +42,10 @@ export function RateForm({ open, initial, onClose, onSaved }:
           </Select>
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Plano"><Select {...register('id_plan')} defaultValue=""><option value="">— todos —</option>{plans.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</Select></Field>
-          <Field label="Tronco"><Select {...register('id_trunk')} defaultValue=""><option value="">— nenhum —</option>{trunks.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</Select></Field>
+          <Field label="Plano" error={errors.id_plan?.message}><Select {...register('id_plan')} defaultValue=""><option value="" disabled>{plans.isLoading ? 'Carregando…' : 'Selecione o plano'}</option>{plans.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</Select></Field>
+          <Field label="Grupo de troncos"><Select {...register('id_trunk_group')} defaultValue=""><option value="">— nenhum —</option>{trunks.data?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</Select></Field>
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Tarifa (por min)" error={errors.rateinitial?.message}><Input type="number" step="0.00001" {...register('rateinitial')} /></Field>
-          <Field label="Off-peak"><Input type="number" step="0.00001" {...register('rate_offpeak')} /></Field>
-        </div>
+        <Field label="Tarifa (por min)" error={errors.rateinitial?.message}><Input type="number" step="0.00001" {...register('rateinitial')} /></Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Bloco (s)"><Input type="number" {...register('billingblock')} /></Field>
           <Field label="Conexão"><Input type="number" step="0.00001" {...register('connectcharge')} /></Field>
